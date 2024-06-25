@@ -1,5 +1,7 @@
 using MediatR;
 using Questao5.Infrastructure.Sqlite;
+using Microsoft.Data.Sqlite;
+using System.Data;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,8 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 var databaseConfig = new DatabaseConfig { Name = builder.Configuration.GetValue<string>("DatabaseName", "Data Source=database.sqlite") };
 builder.Services.AddSingleton(databaseConfig);
 builder.Services.AddSingleton<IDatabaseBootstrap, DatabaseBootstrap>();
+
+builder.Services.AddTransient<IDbConnection>((sp) => new SqliteConnection(databaseConfig.Name));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
